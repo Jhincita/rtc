@@ -67,9 +67,9 @@ export default function IntakeForm() {
             calendlyUrl.searchParams.append("full_name", form.name);
             calendlyUrl.searchParams.append("email", form.email);
             calendlyUrl.searchParams.append("phone", form.phone);
-            calendlyUrl.searchParams.append("question_1", form.problemType);
-            calendlyUrl.searchParams.append("question_2", form.monetaryRange);
-            calendlyUrl.searchParams.append("question_0", form.caseDetails);
+            calendlyUrl.searchParams.append("question_0", form.problemType);
+            calendlyUrl.searchParams.append("question_1", form.monetaryRange);
+            calendlyUrl.searchParams.append("question_2", form.caseDetails);
 
             window.location.href = calendlyUrl.toString();
 
