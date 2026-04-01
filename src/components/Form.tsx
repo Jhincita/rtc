@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 type FormData = {
+    rut: string;
     name: string;
     email: string;
     phone: string;
@@ -13,6 +14,7 @@ type FormData = {
 
 export default function IntakeForm() {
     const [form, setForm] = useState<FormData>({
+        rut: "",
         name: "",
         email: "",
         phone: "",
@@ -20,6 +22,9 @@ export default function IntakeForm() {
         monetaryRange: "",
         caseDetails: "",
     });
+
+    const [rutError, setRutError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const cases = [
         { title: "Víctima de Fraude Bancario" },
@@ -29,21 +34,40 @@ export default function IntakeForm() {
         { title: "Conflictos PYME" },
     ];
 
-    const [loading, setLoading] = useState(false);
+    // Basic RUT validation (optional but helpful)
+    const validateRUT = (rut: string): boolean => {
+        const cleanRut = rut.replace(/\./g, "").replace(/-/g, "");
+        if (cleanRut.length < 2) return false;
+        const body = cleanRut.slice(0, -1);
+        const dv = cleanRut.slice(-1).toUpperCase();
+        let sum = 0;
+        let multiplier = 2;
+        for (let i = body.length - 1; i >= 0; i--) {
+            sum += parseInt(body[i], 10) * multiplier;
+            multiplier = multiplier === 7 ? 2 : multiplier + 1;
+        }
+        const expectedDv = 11 - (sum % 11);
+        const expectedDvStr = expectedDv === 11 ? "0" : expectedDv === 10 ? "K" : expectedDv.toString();
+        return dv === expectedDvStr;
+    };
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-
-        setForm({
-            ...form,
-            [name]: value,
-        });
+        setForm({ ...form, [name]: value });
+        if (name === "rut") setRutError("");
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        // Validate RUT
+        if (!validateRUT(form.rut)) {
+            setRutError("RUT inválido");
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -62,17 +86,18 @@ export default function IntakeForm() {
                 return;
             }
 
-            // Build Calendly URL
+            // Build Calendly URL with only default fields
             const calendlyUrl = new URL("https://calendly.com/enidelmale/30min");
-            calendlyUrl.searchParams.append("name", form.name); // or "full_name"
+            calendlyUrl.searchParams.append("name", form.name);
             calendlyUrl.searchParams.append("email", form.email);
-            calendlyUrl.searchParams.append("phone", form.phone); // if standard phone field
-            calendlyUrl.searchParams.append("question_0", form.problemType);
-            calendlyUrl.searchParams.append("question_1", form.monetaryRange);
-            calendlyUrl.searchParams.append("question_2", form.caseDetails);
+            // Pre‑fill the default "message" field with a reference to the client ID
+            // The webhook will parse this to fetch the full case details
+            calendlyUrl.searchParams.append(
+                "message",
+                `Cliente ID: ${data.client.id}\nRUT: ${form.rut}`
+            );
 
             window.location.href = calendlyUrl.toString();
-
         } catch (error) {
             console.error("Network error:", error);
             alert("Something went wrong. Please try again.");
@@ -82,18 +107,28 @@ export default function IntakeForm() {
     };
 
     return (
-        <form id="form"
+        <form
+            id="form"
             onSubmit={handleSubmit}
             className="bg-white p-8 rounded-2xl shadow-md w-full max-w-xl space-y-5"
         >
-            {/* Title */}
             <h1 className="text-3xl font-semibold text-center text-blue-900">
                 Completa el formulario y cuéntanos más de tu caso.
             </h1>
 
+            {/* RUT */}
+            <input
+                name="rut"
+                required
+                placeholder="RUT* (ej. 12.345.678-9)"
+                value={form.rut}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+            />
+            {rutError && <p className="text-red-500 text-sm">{rutError}</p>}
+
             {/* Name */}
             <input
-                id ="name"
                 name="name"
                 required
                 placeholder="Nombre y Apellido*"
@@ -132,17 +167,15 @@ export default function IntakeForm() {
                 className="w-full p-3 border rounded-lg bg-white"
             >
                 <option value="">¿Qué tipo de problema tienes?*</option>
-
                 {cases.map((c) => (
                     <option key={c.title} value={c.title}>
                         {c.title}
                     </option>
                 ))}
-
                 <option value="Otro">Otro</option>
             </select>
 
-            {/* Amount Range */}
+            {/* Monetary Range */}
             <select
                 name="monetaryRange"
                 required
@@ -153,12 +186,14 @@ export default function IntakeForm() {
                 <option value="">
                     ¿De cuánto es el rango monetario que perdiste producto a ese problema?*
                 </option>
-                <option value="100k-500k">Menos de $2.000.000</option>
-                <option value="500k-1m">Entre $2.000.000 y $4.000.000</option>
-                <option value="1m+">Más de $4.000.000</option>
+                <option value="Menos de $2.000.000">Menos de $2.000.000</option>
+                <option value="Entre $2.000.000 y $4.000.000">
+                    Entre $2.000.000 y $4.000.000
+                </option>
+                <option value="Más de $4.000.000">Más de $4.000.000</option>
             </select>
 
-            {/* Message */}
+            {/* Case Details */}
             <textarea
                 name="caseDetails"
                 required
@@ -169,7 +204,6 @@ export default function IntakeForm() {
                 className="w-full p-3 border rounded-lg"
             />
 
-            {/* Button */}
             <button
                 type="submit"
                 disabled={loading}

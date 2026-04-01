@@ -9,6 +9,7 @@ datasource db {
 
 model Client {
   id            String   @id @default(uuid())
+  rut           String? // not unique
   name          String
   email         String
   phone         String
