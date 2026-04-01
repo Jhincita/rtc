@@ -47,17 +47,35 @@ export default function IntakeForm() {
         setLoading(true);
 
         try {
-            await fetch("/api/clients", {
+            const response = await fetch("/api/clients", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
 
-            window.location.href = "https://calendly.com/enidelmale/30min";
-        } catch {
-            alert("Something went wrong");
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error(data.error || "Failed to save");
+                alert("Something went wrong. Please try again.");
+                setLoading(false);
+                return;
+            }
+
+            // Build Calendly URL
+            const calendlyUrl = new URL("https://calendly.com/enidelmale/30min");
+            calendlyUrl.searchParams.append("name", form.name);
+            calendlyUrl.searchParams.append("email", form.email);
+            calendlyUrl.searchParams.append("phone", form.phone);
+            calendlyUrl.searchParams.append("problem_type", form.problemType);
+            calendlyUrl.searchParams.append("monetary_range", form.monetaryRange);
+            calendlyUrl.searchParams.append("case_details", form.caseDetails);
+
+            window.location.href = calendlyUrl.toString();
+
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("Something went wrong. Please try again.");
         } finally {
             setLoading(false);
         }
