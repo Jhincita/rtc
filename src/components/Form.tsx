@@ -34,26 +34,24 @@ export default function IntakeForm() {
         { title: "Conflictos PYME" },
     ];
 
-    // Basic RUT validation (optional but helpful)
+    // RUT validation (simple)
     const validateRUT = (rut: string): boolean => {
-        const cleanRut = rut.replace(/\./g, "").replace(/-/g, "");
-        if (cleanRut.length < 2) return false;
-        const body = cleanRut.slice(0, -1);
-        const dv = cleanRut.slice(-1).toUpperCase();
+        const clean = rut.replace(/\./g, "").replace(/-/g, "");
+        if (clean.length < 2) return false;
+        const body = clean.slice(0, -1);
+        const dv = clean.slice(-1).toUpperCase();
         let sum = 0;
         let multiplier = 2;
         for (let i = body.length - 1; i >= 0; i--) {
             sum += parseInt(body[i], 10) * multiplier;
             multiplier = multiplier === 7 ? 2 : multiplier + 1;
         }
-        const expectedDv = 11 - (sum % 11);
-        const expectedDvStr = expectedDv === 11 ? "0" : expectedDv === 10 ? "K" : expectedDv.toString();
-        return dv === expectedDvStr;
+        const expected = 11 - (sum % 11);
+        const expectedStr = expected === 11 ? "0" : expected === 10 ? "K" : expected.toString();
+        return dv === expectedStr;
     };
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-    ) => {
+    const handleChange = (e: any) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
         if (name === "rut") setRutError("");
@@ -62,7 +60,6 @@ export default function IntakeForm() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validate RUT
         if (!validateRUT(form.rut)) {
             setRutError("RUT inválido");
             return;
@@ -86,16 +83,17 @@ export default function IntakeForm() {
                 return;
             }
 
-            // Build Calendly URL with only default fields
+            // Build Calendly URL
             const calendlyUrl = new URL("https://calendly.com/enidelmale/30min");
             calendlyUrl.searchParams.append("name", form.name);
             calendlyUrl.searchParams.append("email", form.email);
-            // Pre‑fill the default "message" field with a reference to the client ID
-            // The webhook will parse this to fetch the full case details
+            // Pre‑fill the default message field with client ID (and optionally RUT)
             calendlyUrl.searchParams.append(
                 "message",
                 `Cliente ID: ${data.client.id}\nRUT: ${form.rut}`
             );
+            // Pre‑fill the custom RUT field – replace "rut_param" with the actual name attribute
+            calendlyUrl.searchParams.append("rut_param", form.rut);
 
             window.location.href = calendlyUrl.toString();
         } catch (error) {
@@ -107,16 +105,11 @@ export default function IntakeForm() {
     };
 
     return (
-        <form
-            id="form"
-            onSubmit={handleSubmit}
-            className="bg-white p-8 rounded-2xl shadow-md w-full max-w-xl space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-md w-full max-w-xl space-y-5">
             <h1 className="text-3xl font-semibold text-center text-blue-900">
                 Completa el formulario y cuéntanos más de tu caso.
             </h1>
 
-            {/* RUT */}
             <input
                 name="rut"
                 required
@@ -127,7 +120,6 @@ export default function IntakeForm() {
             />
             {rutError && <p className="text-red-500 text-sm">{rutError}</p>}
 
-            {/* Name */}
             <input
                 name="name"
                 required
@@ -137,7 +129,6 @@ export default function IntakeForm() {
                 className="w-full p-3 border rounded-lg"
             />
 
-            {/* Phone */}
             <input
                 name="phone"
                 required
@@ -147,7 +138,6 @@ export default function IntakeForm() {
                 className="w-full p-3 border rounded-lg"
             />
 
-            {/* Email */}
             <input
                 type="email"
                 name="email"
@@ -158,7 +148,6 @@ export default function IntakeForm() {
                 className="w-full p-3 border rounded-lg"
             />
 
-            {/* Problem Type */}
             <select
                 name="problemType"
                 required
@@ -175,7 +164,6 @@ export default function IntakeForm() {
                 <option value="Otro">Otro</option>
             </select>
 
-            {/* Monetary Range */}
             <select
                 name="monetaryRange"
                 required
@@ -183,17 +171,12 @@ export default function IntakeForm() {
                 onChange={handleChange}
                 className="w-full p-3 border rounded-lg bg-white"
             >
-                <option value="">
-                    ¿De cuánto es el rango monetario que perdiste producto a ese problema?*
-                </option>
+                <option value="">¿De cuánto es el rango monetario que perdiste?*</option>
                 <option value="Menos de $2.000.000">Menos de $2.000.000</option>
-                <option value="Entre $2.000.000 y $4.000.000">
-                    Entre $2.000.000 y $4.000.000
-                </option>
+                <option value="Entre $2.000.000 y $4.000.000">Entre $2.000.000 y $4.000.000</option>
                 <option value="Más de $4.000.000">Más de $4.000.000</option>
             </select>
 
-            {/* Case Details */}
             <textarea
                 name="caseDetails"
                 required

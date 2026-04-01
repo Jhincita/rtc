@@ -27,6 +27,7 @@ export async function POST(request: Request) {
             data: {
                 name: body.name,
                 email: body.email,
+                rut: body.rut,
                 phone: body.phone,
                 problemType: body.problemType,
                 monetaryRange: body.monetaryRange,
