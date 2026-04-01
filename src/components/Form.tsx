@@ -64,12 +64,12 @@ export default function IntakeForm() {
 
             // Build Calendly URL
             const calendlyUrl = new URL("https://calendly.com/enidelmale/30min");
-            calendlyUrl.searchParams.append("name", form.name);
+            calendlyUrl.searchParams.append("full_name", form.name);
             calendlyUrl.searchParams.append("email", form.email);
             calendlyUrl.searchParams.append("phone", form.phone);
-            calendlyUrl.searchParams.append("problem_type", form.problemType);
-            calendlyUrl.searchParams.append("monetary_range", form.monetaryRange);
-            calendlyUrl.searchParams.append("case_details", form.caseDetails);
+            calendlyUrl.searchParams.append("question_1", form.problemType);
+            calendlyUrl.searchParams.append("question_2", form.monetaryRange);
+            calendlyUrl.searchParams.append("question_0", form.caseDetails);
 
             window.location.href = calendlyUrl.toString();
 
