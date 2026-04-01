@@ -7,8 +7,8 @@ type FormData = {
     email: string;
     phone: string;
     problemType: string;
-    amountRange: string;
-    message: string;
+    monetaryRange: string;
+    caseDetails: string;
 };
 
 export default function IntakeForm() {
@@ -17,8 +17,8 @@ export default function IntakeForm() {
         email: "",
         phone: "",
         problemType: "",
-        amountRange: "",
-        message: "",
+        monetaryRange: "",
+        caseDetails: "",
     });
 
     const cases = [
@@ -126,9 +126,9 @@ export default function IntakeForm() {
 
             {/* Amount Range */}
             <select
-                name="amountRange"
+                name="monetaryRange"
                 required
-                value={form.amountRange}
+                value={form.monetaryRange}
                 onChange={handleChange}
                 className="w-full p-3 border rounded-lg bg-white"
             >
@@ -142,11 +142,11 @@ export default function IntakeForm() {
 
             {/* Message */}
             <textarea
-                name="message"
+                name="caseDetails"
                 required
                 rows={4}
                 placeholder="Cuéntanos el detalle de tu caso*"
-                value={form.message}
+                value={form.caseDetails}
                 onChange={handleChange}
                 className="w-full p-3 border rounded-lg"
             />
