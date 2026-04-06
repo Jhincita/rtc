@@ -9,7 +9,7 @@ export async function POST(request: Request) {
         const body = await request.json()
 
         // Validate required fields
-        const requiredFields = ['name', 'email', 'phone', 'problemType', 'monetaryRange', 'caseDetails']
+        const requiredFields = ['name', 'email', 'phone', 'problemType' ]
         const missingFields = requiredFields.filter(field => !body[field])
 
         if (missingFields.length > 0) {
