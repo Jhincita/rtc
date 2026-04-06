@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 
 const cases = [
-    { title: "Víctima de Fraude Bancario" },
-    { title: "Pie Inmobiliario Retenido" },
-    { title: "Vehículo Nuevo con Fallas" },
-    { title: "Robo en Recinto Privado" },
-    { title: "Conflictos PYME" },
+    { title: "¿Demoras infinitas para la entrega de tu propiedad?" },
+    { title: "¿La inmobiliaria te multa o castiga sin razón?" },
+    { title: "¿Cambiaron los requisitos para la compra?" },
+    { title: "¿Estás atravesando enfermedades, despidos o dificultades económicas?" },
+    { title: "¿Tu institución financiera te rechazó el hipotecario?" },
 ];
 
 export default function CasesCarousel() {

@@ -1,4 +1,3 @@
-import Form from "@/components/Form";
 import CasesCarousel from "@/components/CasesCarousel";
 import Intro from "@/components/Intro";
 
@@ -7,33 +6,35 @@ export default function Home() {
         <main className="min-h-screen bg-gray-50">
 
             {/* Header */}
-            <header className="bg-white shadow-sm p-4">
-                <div className="max-w-6xl mx-auto flex items-center gap-3">
+            <header className="bg-white shadow-sm px-10 py-4">
+                <div className="max-w-6xl mx-auto flex items-center justify-between">
 
-                    {/* Logo */}
-                    <img
-                        src="/dtd_logo_transp.svg"
-                        alt="Defiende tu Dinero"
-                        className="w-10 h-10"
-                    />
-
-                    {/* Brand name */}
-                    <div className="font-semibold text-lg">
-                        Defiende tu Dinero
+                    {/* Logo + Brand */}
+                    <div className="flex items-center gap-3">
+                        <img
+                            src="/dtd_logo_transp.svg"
+                            alt="Resuelve Tu Contrato"
+                            className="w-10 h-10"
+                        />
+                        <span className="font-semibold text-lg tracking-wide">
+                            RESUELVE TU CONTRATO
+                        </span>
                     </div>
+
+                    {/* Nav */}
+                    <nav className="flex gap-8 text-sm font-medium text-gray-600">
+                        <a href="#" className="hover:text-black transition">INICIO</a>
+                        <a href="#" className="hover:text-black transition">PRIVACIDAD</a>
+                    </nav>
 
                 </div>
             </header>
 
-            {/* Hero / Intro */}
-            <section className="max-w-6xl mx-auto p-6 text-center">
-                <Intro/>
-            </section>
-
+            {/* Hero — full width, no container */}
+            <Intro />
 
             {/* Cases */}
             <CasesCarousel />
-
 
         </main>
     );

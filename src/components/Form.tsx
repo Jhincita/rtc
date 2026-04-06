@@ -3,68 +3,37 @@
 import { useState } from "react";
 
 type FormData = {
-    rut: string;
     name: string;
     email: string;
     phone: string;
     problemType: string;
-    monetaryRange: string;
-    caseDetails: string;
 };
 
 export default function IntakeForm() {
     const [form, setForm] = useState<FormData>({
-        rut: "",
         name: "",
         email: "",
         phone: "",
         problemType: "",
-        monetaryRange: "",
-        caseDetails: "",
     });
 
-    const [rutError, setRutError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const cases = [
-        { title: "Víctima de Fraude Bancario" },
-        { title: "Pie Inmobiliario Retenido" },
-        { title: "Vehículo Nuevo con Fallas" },
-        { title: "Robo en Recinto Privado" },
-        { title: "Conflictos PYME" },
+        { title: "Retraso en la entrega" },
+        { title: "Incumplimientos de la inmobiliaria" },
+        { title: "Cambio unilateral de condiciones" },
+        { title: "Dificultades económicas" },
+        { title: "Rechazo del crédito" },
     ];
 
-    // RUT validation (simple)
-    const validateRUT = (rut: string): boolean => {
-        const clean = rut.replace(/\./g, "").replace(/-/g, "");
-        if (clean.length < 2) return false;
-        const body = clean.slice(0, -1);
-        const dv = clean.slice(-1).toUpperCase();
-        let sum = 0;
-        let multiplier = 2;
-        for (let i = body.length - 1; i >= 0; i--) {
-            sum += parseInt(body[i], 10) * multiplier;
-            multiplier = multiplier === 7 ? 2 : multiplier + 1;
-        }
-        const expected = 11 - (sum % 11);
-        const expectedStr = expected === 11 ? "0" : expected === 10 ? "K" : expected.toString();
-        return dv === expectedStr;
-    };
-
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
-        if (name === "rut") setRutError("");
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if (!validateRUT(form.rut)) {
-            setRutError("RUT inválido");
-            return;
-        }
-
         setLoading(true);
 
         try {
@@ -84,16 +53,13 @@ export default function IntakeForm() {
             }
 
             // Build Calendly URL
-            const calendlyUrl = new URL("https://calendly.com/enidelmale/30min");
+            const calendlyUrl = new URL("https://calendly.com/enidelmale/asesoria-rtc");
             calendlyUrl.searchParams.append("name", form.name);
             calendlyUrl.searchParams.append("email", form.email);
-            // Pre‑fill the default message field with client ID (and optionally RUT)
             calendlyUrl.searchParams.append(
                 "message",
-                `Cliente ID: ${data.client.id}\nRUT: ${form.rut}`
+                `Cliente ID: ${data.client.id}`
             );
-            // Pre‑fill the custom RUT field – replace "rut_param" with the actual name attribute
-            calendlyUrl.searchParams.append("rut_param", form.rut);
 
             window.location.href = calendlyUrl.toString();
         } catch (error) {
@@ -106,19 +72,9 @@ export default function IntakeForm() {
 
     return (
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-md w-full max-w-xl space-y-5">
-            <h1 className="text-3xl font-semibold text-center text-blue-900">
-                Completa el formulario y cuéntanos más de tu caso.
+            <h1 className="text-3xl font-semibold text-center text-black">
+                Obtén asesoría gratuita completando el formulario.
             </h1>
-
-            <input
-                name="rut"
-                required
-                placeholder="RUT* (ej. 12.345.678-9)"
-                value={form.rut}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-            />
-            {rutError && <p className="text-red-500 text-sm">{rutError}</p>}
 
             <input
                 name="name"
@@ -161,31 +117,7 @@ export default function IntakeForm() {
                         {c.title}
                     </option>
                 ))}
-                <option value="Otro">Otro</option>
             </select>
-
-            <select
-                name="monetaryRange"
-                required
-                value={form.monetaryRange}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg bg-white"
-            >
-                <option value="">¿De cuánto es el rango monetario que perdiste?*</option>
-                <option value="Menos de $2.000.000">Menos de $2.000.000</option>
-                <option value="Entre $2.000.000 y $4.000.000">Entre $2.000.000 y $4.000.000</option>
-                <option value="Más de $4.000.000">Más de $4.000.000</option>
-            </select>
-
-            <textarea
-                name="caseDetails"
-                required
-                rows={4}
-                placeholder="Cuéntanos el detalle de tu caso*"
-                value={form.caseDetails}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-            />
 
             <button
                 type="submit"
