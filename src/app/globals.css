@@ -27,7 +27,7 @@ body {
     background-color: #DB7F43;
     background-image: url('/bg_web.png');
     background-size: cover;
-    background-position: top center;
+    background-position: left center;
     background-attachment: fixed;
     color: var(--foreground);
     font-family: Arial, sans-serif;
