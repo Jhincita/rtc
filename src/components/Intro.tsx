@@ -4,23 +4,21 @@ export default function Intro() {
     return (
         <section className="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-10 items-center">
 
-            {/* LEFT: TEXT */}
-            <div className="space-y-4">
+            <div className="relative z-10 flex-1 space-y-6">
 
-                <h1 className="text-4xl font-bold leading-tight">
-                    Defendemos a los consumidores.
+                <h1 className="text-4xl font-black text-white leading-tight">
+                    Agendar una reunión es el rimer paso para{' '}
+                    <u>recuperar tu pie.</u>
                 </h1>
 
-                <p className="text-gray-600">
-                    Clonación de tarjetas • Estafas • Cobros indebidos
+                <p className="text-3xl font-black text-white leading-snug">
+                    Con nuestra asesoría, cientos de personas han{' '}
+                    <u>recuperado el pie de su inversión inmobiliaria</u>{' '}
+                    de forma segura y garantizada.
                 </p>
 
-                <p className="text-gray-700">
-                    Orientación legal especializada.
-                </p>
-
-                <p className="text-sm text-gray-400">
-                    Proyecto de @resuelvetucontrato
+                <p className="text-3xl font-black text-white leading-snug">
+                    Esta reunión será totalmente <u>gratis.</u>
                 </p>
 
             </div>

@@ -53,7 +53,7 @@ export default function IntakeForm() {
             }
 
             // Build Calendly URL
-            const calendlyUrl = new URL("https://calendly.com/enidelmale/asesoria-rtc");
+            const calendlyUrl = new URL("https://calendly.com/resuelvetucontratoagenda/30min");
             calendlyUrl.searchParams.append("name", form.name);
             calendlyUrl.searchParams.append("email", form.email);
             calendlyUrl.searchParams.append(
@@ -77,12 +77,13 @@ export default function IntakeForm() {
             </h1>
 
             <input
+                id="name"
                 name="name"
                 required
                 placeholder="Nombre y Apellido*"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
+                className="w-full p-3 border rounded-lg text-gray-700"
             />
 
             <input
@@ -91,7 +92,7 @@ export default function IntakeForm() {
                 placeholder="Teléfono*"
                 value={form.phone}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
+                className="w-full p-3 border rounded-lg text-gray-700"
             />
 
             <input
@@ -101,7 +102,7 @@ export default function IntakeForm() {
                 placeholder="Correo*"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
+                className="w-full p-3 border rounded-lg text-gray-700"
             />
 
             <select
@@ -109,7 +110,7 @@ export default function IntakeForm() {
                 required
                 value={form.problemType}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg bg-white"
+                className="w-full p-3 border rounded-lg text-gray-700"
             >
                 <option value="">¿Qué tipo de problema tienes?*</option>
                 {cases.map((c) => (
